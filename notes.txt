@@ -1,0 +1,21 @@
+Arithmetics:
+123 (push)
++ (a b -- a+b)
+- (a b -- a-b)
+Stack:
+dup (a -- a a)
+drop (a -- )
+swap (a b -- b a)
+over (a b -- a b a)
+rot (a b c -- b c a)
+Program:
+exit (return stack top)
+Conditions:
+= (a b -- -1 if equal)
+> (a b -- -1 if a greeter b)
+< (a b -- -1 if a less b)
+and (a b -- -1 if a and b)
+or (a b -- -1 if a or b)
+invert (a -- b)
+if (a -- begin if statement)
+then ( end if statement)
