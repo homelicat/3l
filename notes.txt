@@ -1,24 +1,15 @@
-Arithmetics:
-123 (push)
-+ (a b -- a+b)
-- (a b -- a-b)
-Stack:
-dup (a -- a a)
-drop (a -- )
-swap (a b -- b a)
-over (a b -- a b a)
-rot (a b c -- b c a)
-Program:
-exit (return stack top)
-Conditions:
-= (a b -- -1 if equal)
-> (a b -- -1 if a greeter b)
-< (a b -- -1 if a less b)
-and (a b -- -1 if a and b)
-or (a b -- -1 if a or b)
-invert (a -- b)
-if (a -- begin if statement)
-then ( end if statement)
-else (add else for statement)
-: (begin define)
-; (end define)
+section .data
+	txt db "Hi",0xa
+section .text
+global _start
+_start:
+	xor ebx,ebx
+	mov ecx,txt
+	mov eax,4
+	inc ebx
+	mov edx,3
+	int 80h
+	
+	mov eax,1
+	xor ebx,ebx
+	int 80h
