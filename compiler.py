@@ -11,31 +11,33 @@ with open("test.s","w") as f:
 	f.write("section .text\nglobal _start\n")
 	for com in src:
 		if com.isdecimal():
-			f.write("\tpush "+com+"\n")
+			f.write("\tpush eax\n\tmov eax,"+com+"\n")
 		elif com=="+":
-			f.write("\tpop eax\n\tpop ebx\n\tadd eax,ebx\n\tpush eax\n")
+			f.write("\tpop edx\n\tadd eax,edx\n")
 		elif com=="-":
-			f.write("\tpop eax\n\tpop ebx\n\tsub ebx,eax\n\tpush ebx\n")
+			f.write("\tmov edx,eax\n\tpop eax\n\tsub eax,edx\n")
 		elif com=="=":
-			f.write("\txor ecx,ecx\n\tmov edx,-1\n\tpop eax\n\tpop ebx\n\tcmp eax,ebx\n\tcmove ecx,edx\n\tpush ecx\n")
+			f.write("\txor ecx,ecx\n\tmov ebx,-1\n\tpop edx\n\tcmp edx,eax\n\tmov eax,ecx\n\tcmove eax,ebx\n")
 		elif com==">":
-			f.write("\txor ecx,ecx\n\tmov edx,-1\n\tpop eax\n\tpop ebx\n\tcmp ebx,eax\n\tcmovg ecx,edx\n\tpush ecx\n")
+			f.write("\txor ecx,ecx\n\tmov ebx,-1\n\tpop edx\n\tcmp edx,eax\n\tmov eax,ecx\n\tcmovg eax,ebx\n")
 		elif com=="<":
-			f.write("\txor ecx,ecx\n\tmov edx,-1\n\tpop eax\n\tpop ebx\n\tcmp ebx,eax\n\tcmovl ecx,edx\n\tpush ecx\n")
+			f.write("\txor ecx,ecx\n\tmov ebx,-1\n\tpop edx\n\tcmp edx,eax\n\tmov eax,ecx\n\tcmovl eax,ebx\n")
 		elif com=="&":
-			f.write("\tpop eax\n\tpop ebx\n\tand eax,ebx\n\tpush eax\n")
+			f.write("\tpop edx\n\tand eax,edx\n")
 		elif com=="|":
-			f.write("\tpop eax\n\tpop ebx\n\tor eax,ebx\n\tpush eax\n")
+			f.write("\tpop edx\n\tor eax,edx\n")
 		elif com=="~":
-			f.write("\tpop eax\n\tnot eax\n\tpush eax\n")
-		#elif com=="if":
-		#	f.write("\tpop eax\n\tcmp eax,0\n\tje if"+str(ifs)+"\n")
-		#elif com=="then":
-		#	f.write("if"+str(ifs)+":\n")
-		#	ifs+=1
-		#elif com=="else":
-		#	f.write("\tjmp if"+str(ifs+1)+"\nif"+str(ifs)+":\n")
-		#	ifs+=1
+			f.write("\tnot eax\n")
+		elif com=="?":
+			f.write("\tcmp eax,0\n\tje if"+str(ifs)+"\n")
+		elif com==".":
+			f.write("if"+str(ifs)+":\n")
+			ifs+=1
+		elif com==",":
+			f.write("\tjmp if"+str(ifs+1)+"\nif"+str(ifs)+":\n")
+			ifs+=1
+		elif com=="a":
+			pass
 		elif com==":":
 			if func:
 				print("Error: already defining")
@@ -46,12 +48,12 @@ with open("test.s","w") as f:
 				print("Error: not defining")
 				break
 			func=0
-			f.write("\tpop eax\n\tmov esp,ebp\n\tpop ebp\n\tret\n")
+			f.write("\tpop edx\n\tmov esp,ebp\n\tpop ebp\n\tret\n")
 		elif com=="exit":
-			f.write("\tmov eax,1\n\tpop ebx\n\tint 80h\n")
+			f.write("\tmov ebx,eax\n\tmov eax,1\n\tint 80h\n")
 		else:
 			if (func==2) and (com in funcs):
-				f.write("\tcall "+com+"\n\tpush eax\n")
+				f.write("\tpush eax\n\tcall "+com+"\n")
 			elif func==1:
 				funcs.append(com)
 				f.write(com+":\n\tpush ebp\n\tmov ebp,esp\n")
